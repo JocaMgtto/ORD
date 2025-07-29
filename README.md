@@ -49,7 +49,7 @@ O programa solicita ao usuário o nome do arquivo de dados que deseja abrir. Em 
 
 Se o registro for encontrado, seus campos são exibidos de forma formatada. Caso contrário, uma mensagem informa que a busca não teve sucesso.
 
-⚙Como Funciona
+Como Funciona
 A lógica de leitura e busca se baseia estritamente no formato de arquivo definido pelo script de geração:
 
 Abertura do Arquivo: O programa abre o arquivo de dados especificado em modo de leitura binária ('rb').
@@ -76,3 +76,40 @@ Se houver uma correspondência, o loop de busca é interrompido e todos os campo
 
 Se o fim do arquivo for alcançado sem uma correspondência, o programa informa que o registro não foi encontrado.
 
+terceiro codigo: busca_rrn.py
+
+Leitor de Arquivo com Registros de Tamanho Fixo
+Este script Python demonstra o método de acesso direto a registros por RRN (Número Relativo de Registro) em um arquivo binário. Diferente dos métodos anteriores que usavam registros de tamanho variável, este programa opera sobre um arquivo onde todos os registros possuem um tamanho fixo, permitindo o cálculo e o acesso imediato a qualquer registro.
+
+Descrição do Projeto
+O objetivo do programa é ler um registro específico de um arquivo de dados sem a necessidade de percorrer o arquivo sequencialmente. O usuário fornece o nome do arquivo e o RRN (índice) do registro desejado. O script então calcula a posição exata (offset) do registro no arquivo, salta diretamente para essa posição e lê os dados, exibindo seus campos.
+
+Esta abordagem é extremamente eficiente para situações onde a posição do registro é conhecida ou pode ser facilmente calculada.
+
+Formato do Arquivo
+Para que este script funcione, ele espera que o arquivo de dados tenha a seguinte estrutura de Registros de Tamanho Fixo:
+
+Cabeçalho (4 bytes): Os primeiros 4 bytes do arquivo contêm um único número inteiro que indica o número total de registros presentes no arquivo.
+
+Área de Dados: Após o cabeçalho, seguem-se os registros, um após o outro.
+
+Cada registro ocupa um espaço fixo de 64 bytes.
+
+Dentro de cada registro de 64 bytes, os dados são armazenados como uma string com campos separados pelo caractere pipe (|).
+
+O espaço não utilizado dentro de um registro é preenchido com um caractere de padding (neste caso, o caractere nulo \0).
+
+Como Funciona
+O script lê o cabeçalho de 4 bytes para saber quantos registros existem no total e para validar a entrada do usuário.
+
+A posição exata do registro no arquivo é calculada com a fórmula de acesso direto:
+posição = (RRN * tamanho_do_registro) + tamanho_do_cabeçalho
+posição = (rrn * 64) + 4
+
+A função arq.seek() é usada para mover o ponteiro de leitura do arquivo diretamente para a posição calculada, sem ler os dados anteriores.
+
+O script lê exatamente 64 bytes (o tamanho de um registro).
+
+Os caracteres de padding (\0) são removidos do final da string lida.
+
+A string é dividida pelo caractere | para extrair e exibir os campos individuais.
